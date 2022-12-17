@@ -16,42 +16,21 @@
 				<li><a href="{% url 'home' %}" class="current">Home</a></li>
 			</div>
 			<div class="menu_top_right">
-			{% if  not request.user.is_authenticated %}
-				<li><a href="{% url 'login' %}">Login</a></li>
-				<li><a href="{% url 'register' %}">Registration</a></li>
-			{% else %}
-				<li><a href="{% url 'logout' %}">Logout</a></li>
-			{% endif %}
+			menu_top_right
 			</div>
 
     </div>
 	<div class="main">
-    {% if request.user.is_authenticated %}
 		<div class="menu">
             <div class="menu_left_m">
             Menu
             </div>
-			{% if  not request.user.is_authenticated %}
 				<ul class="menu_left">
 				  <li>
-					<a href="{% url 'login' %}">Login</a></li>
-				  <li><a href="{% url 'register' %}">Registration</a></li>
+					<a href="#">Login</a>
+				  </li>
 				</ul>
-			{% else %}
-
-			<ul class="menu_left">
-			  <li><a href="{% url 'my_profile' %}">My orders</a></li>
-			  <li><a href="{% url 'library' %}">All Books</a></li>
-				{% if  request.user.role == 1 %}
-					<li><a href="{% url 'all_users' %}">All users</a></li>
-					<li><a href="{% url 'all_authors' %}">All authors</a></li>
-					<li><a href="{% url 'add_book' %}">Add book</a></li>
-
-				{% endif %}
-			</ul>
-			{% endif %}
 		</div>
-    {% endif %}
 		<div class="content">
 			{% if error %}
 			   <p style="color: red">{{ error }}</p>
@@ -59,16 +38,17 @@
 			{% if succes %}
 				<p style="color: green">{{ succes }}</p>
 			{% endif %}
-            {% if aut %}
-                <a href="{{ aut.get_absolute_url }}" style="color: #4ac1f7">{{ aut.name }}</a>
-        {% endif %}
+<!--            {% if aut %}-->
+<!--                <a href="{{ aut.get_absolute_url }}" style="color: #4ac1f7">{{ aut.name }}</a>-->
+<!--        {% endif %}-->
 			{% block main %}
 			<div class="category-list">
-			<div align="center"><h1>Hi, It`s Home page of team-05`s site</h1></div>
+			<div align="center"><h1>Hi, It`s Home page</h1></div>
 			</div>
 			{% endblock %}
 		</div>
 	</div>
+
 <script>
 // редагуємо стиль
 const m_menu = document.querySelector('div.menu');
@@ -79,7 +59,7 @@ adiv.style.width = "95%";
 </script>
 	<div class="after-box"></div>
 	<div class="footer">
-© Created by team-05: Stets Matthew, Vitalii Makovka
+© Created by Vitalii Makovka
 	</div>
 
 </div>

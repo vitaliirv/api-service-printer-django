@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  postgres_db:
+    container_name: rest_postgres
+    image: postgres:13.9-alpine3.17
+    restart: always
+    volumes:
+      - ./db-data:/var/lib/postgresql/data    
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db01
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:bullseye
+
+volumes:
+    db-data:
+        name: db-data

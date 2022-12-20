@@ -15,8 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
+from printing_checks.views import PrinterViewSet, CheckViewSet, CheckDetail
+
+router = routers.SimpleRouter()
+router.register(r'printer', PrinterViewSet)
+router.register(r'check', CheckViewSet)
+router.register(r'create_checks', CheckViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('printing_checks.urls'))
+    path('', include('printing_checks.urls')),
+    path('api/v1/', include(router.urls)),
+    path('api/v1/check/?check_id=<int:check_id>&api_key=<str:api_key>/', CheckDetail.as_view()),
 ]

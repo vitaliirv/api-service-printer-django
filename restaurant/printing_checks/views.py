@@ -9,8 +9,30 @@ from .serializer import PrinterSerializer, CheckSerializer
 
 
 def index(request):
-    return render(request, 'printing_checks/client_check.html')
+    return render(request, 'printing_checks/index.html')
 
+
+def client_check(request, check_id):
+    data = get_check(check_id)
+    return render(request, 'printing_checks/client_check.html', data)
+
+
+def kitchen_check(request, check_id):
+    data = get_check(check_id)
+    return render(request, 'printing_checks/kitchen_check.html', data)
+
+def get_check(check_id):
+    orders = Check.objects.filter(id=check_id)
+    data = {}
+    if orders:
+        data = {'order_id': orders[0].order['id'],
+                'price': orders[0].order['price'],
+                'address': orders[0].order['address'],
+                'client_name': orders[0].order['client']['name'],
+                'phone': orders[0].order['client']['phone'],
+                'items': orders[0].order['items']
+                }
+    return data
 
 class PrinterViewSet(viewsets.ModelViewSet):
     queryset = Printer.objects.all()
@@ -33,7 +55,8 @@ class CheckViewSet(viewsets.ModelViewSet):
             printer_id = printer.id
             ch_type = printer.check_type
             if self.check_order(order_id, printer_id):
-                serializer = self.get_serializer(data={'printer_id': printer_id, 'type': ch_type, 'order': request.data})
+                serializer = self.get_serializer(
+                    data={'printer_id': printer_id, 'type': ch_type, 'order': request.data})
                 serializer.is_valid(raise_exception=True)
                 self.perform_create(serializer)
                 serialize_data.append(serializer.data)

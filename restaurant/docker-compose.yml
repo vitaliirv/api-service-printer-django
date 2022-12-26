@@ -16,9 +16,16 @@ services:
 
   redis:
     image: redis:bullseye
+    container_name: redis
+    ports:
+      - 6378:6379
 
   wkhtmltopdf:
+    container_name: wkhtmltopdf
     image: openlabs/docker-wkhtmltopdf-aas
+    restart: always
+    ports:
+      - 5000:80
 
 volumes:
     db-data:

@@ -10,5 +10,5 @@ class PrinterAdmin(admin.ModelAdmin):
 
 @admin.register(Check)
 class CheckAdmin(admin.ModelAdmin):
-    list_display = ('id', 'printer_id', 'type', 'order', 'status', 'pdf_file')
-    list_filter = ('printer_id__name', 'type', 'status')
+    list_display = ('id', 'printer_id', 'check_type', 'order', 'status', 'pdf_file')
+    list_filter = ('printer_id__name', 'check_type', 'status')

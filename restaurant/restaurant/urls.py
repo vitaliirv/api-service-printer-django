@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
@@ -26,6 +28,11 @@ router.register(r'create_checks', CheckViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('printing_checks.urls')),
+    path('api/v1/new_checks/api_key=<str:api_key>', CheckDetail.as_view()),
+    path('api/v1/check/check_id=<int:check_id>&api_key=<str:api_key>', CheckDetail.as_view()),
     path('api/v1/', include(router.urls)),
-    path('api/v1/check/?check_id=<int:check_id>&api_key=<str:api_key>/', CheckDetail.as_view()),
+
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

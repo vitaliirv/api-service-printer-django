@@ -29,6 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('printing_checks.urls')),
     path('api/v1/new_checks/api_key=<str:api_key>', CheckDetail.as_view()),
+    # path('api/v1/update_check/check_id=<int:check_id>', CheckDetail.as_view()),
     path('api/v1/check/check_id=<int:check_id>&api_key=<str:api_key>', CheckDetail.as_view()),
     path('api/v1/', include(router.urls)),
 

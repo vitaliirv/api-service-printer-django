@@ -1,4 +1,7 @@
-import asyncio
+import json
+
+import redis
+
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -7,7 +10,7 @@ from rest_framework.views import APIView
 
 from .models import Printer, Check
 from .serializer import PrinterSerializer, CheckSerializer
-from .services import *
+# from .services import *
 
 
 def index(request):
@@ -73,17 +76,28 @@ class CheckViewSet(viewsets.ModelViewSet):
 
                 # Зберігаємо параметри для асинхронних завдань конвертації html чеків в pdf
                 check_obj = Check.objects.latest('id')
-                parameters = {'check_obj': check_obj, 'ch_type': ch_type, 'check_id': check_obj.id, 'order_id': order_id}
-                param_for_tasks.append(parameters)
-
-        # Стартуємо асинхронний воркер генерації PDF-файлів
-        asyncio.run(run_tasks(param_for_tasks))
+                # parameters = "{"+f"'check_obj': {check_obj}, 'ch_type': {ch_type}, 'check_id': {check_obj.id}, " \
+                #              f"'order_id': {order_id}"+"}"
+                # param_for_tasks.append(parameters)
+                with redis.Redis() as client:
+                    # client.lpush('param_for_tasks', order_id)
+                    # client.set('check', check_obj)
+                    client.lpush('checks_id', check_obj.id)
+                    # client.hset(order_id, 'check_obj', check_obj)
+                    # print(client.hget('param_for_task', 'check_obj'))
+                    # client.hset(order_id, 'ch_type', ch_type)
+        # Стартуємо асинхронний воркер-генератор PDF-файлів
+        # Заносимо параметри для асинхронного воркер-генератора PDF-файлів в чергу Redis
+        # with redis.Redis() as client:
+        #     client.lpush('param_for_tasks', param_for_tasks)
+        # asyncio.run(run_tasks(param_for_tasks))
 
         if not serialize_data:
             return Response({'Помилка, чеки для цього замовлення вже були створені!'}, status=status.HTTP_409_CONFLICT)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serialize_data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     def check_order(self, order_id, printer_id):
         checks = Check.objects.filter(printer_id=printer_id)
@@ -116,3 +130,18 @@ class CheckDetail(APIView):
             return Response(CheckSerializer(self.checks, many=True).data, status=status.HTTP_200_OK)
         self.check_printer = Check.objects.filter(pk=check_id).filter(printer_id__api_key=api_key)
         return Response(CheckSerializer(self.check_printer, many=True).data, status=status.HTTP_200_OK)
+
+    # def put(self, request, *args, **kwargs):
+    #     print('111', request.data)
+    #     print('333',args, kwargs)
+    #     check_id = kwargs['check_id']
+    #     request.data['pdf_file'] = request.FILES
+    #     # check_status = request.data['status']
+    #     self.check = Check.objects.filter(pk=check_id)[0]
+    #     if self.check:
+    #         serializer = CheckSerializer(data=request.data, instance=self.check, files=request.FILES)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save()
+    #         return Response({"post": serializer.data})
+    #     else:
+    #         return Response("Method PUT is not allowed")

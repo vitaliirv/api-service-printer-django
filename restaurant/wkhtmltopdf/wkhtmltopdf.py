@@ -43,13 +43,13 @@ async def convert_html_to_pdf(url_check, order_id, check_type, check_id):
     }
     response = requests.post(HOST_DOCKER_WKHTMLTOPDF, data=json.dumps(data), headers=headers)
 
-    # Save the response contents to a file
+    # Save the response contents to a file in the working directory of the worker
     filename = f'{order_id}_{check_type}.pdf'
     upload_pdf_path = f'{PATH_TO_PDF}/{filename}'
     with open(upload_pdf_path, 'wb') as file:
         file.write(response.content)
 
-    # Через API вносимо зміни в БД статус чека та відправляємо pdf-файл чека на сервер
+    # Request to change the status of the check in the DB and send the pdf-file of the check to the server
     check_status = 'rendered'
     await check_status_and_pdf_change(check_id, check_status, upload_pdf_path, filename)
 
@@ -61,6 +61,8 @@ def check_status_and_pdf_change(check_id, check_status, upload_pdf_path, filenam
     files = {'pdf_file': (filename, open(upload_pdf_path, 'rb'))}
     response = requests.put(url, data=data, files=files)
     print(response.status_code)
+
+    # Deleting a temporary file from an employee's work directory
     if response.status_code == 200 and os.path.exists(f'{PATH_TO_PDF}/{filename}'):
         os.remove(f'{PATH_TO_PDF}/{filename}')
 

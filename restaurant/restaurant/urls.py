@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from printing_checks.views import PrinterViewSet, CheckViewSet, CheckDetail
+from printing_checks.views import PrinterViewSet, CheckViewSet, CheckDetail, PrinterDetail
 
 router = routers.SimpleRouter()
 router.register(r'printer', PrinterViewSet)
@@ -29,8 +29,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('printing_checks.urls')),
     path('api/v1/new_checks/api_key=<str:api_key>', CheckDetail.as_view()),
-    # path('api/v1/update_check/check_id=<int:check_id>', CheckDetail.as_view()),
     path('api/v1/check/check_id=<int:check_id>&api_key=<str:api_key>', CheckDetail.as_view()),
+    path('api/v1/printer/api_key=<str:api_key>', PrinterDetail.as_view()),
     path('api/v1/', include(router.urls)),
 
 ]

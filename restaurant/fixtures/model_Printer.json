@@ -1,0 +1,42 @@
+[
+{
+    "model": "printing_checks.printer",
+    "pk": 1,
+    "fields": {
+        "name": "Printer_kasa1",
+        "api_key": "key1",
+        "check_type": "client",
+        "point_id": 1
+    }
+},
+{
+    "model": "printing_checks.printer",
+    "pk": 2,
+    "fields": {
+        "name": "Printer_kitchen1",
+        "api_key": "key2",
+        "check_type": "kitchen",
+        "point_id": 1
+    }
+},
+{
+    "model": "printing_checks.printer",
+    "pk": 3,
+    "fields": {
+        "name": "Printer_kasa2",
+        "api_key": "key3",
+        "check_type": "client",
+        "point_id": 2
+    }
+},
+{
+    "model": "printing_checks.printer",
+    "pk": 4,
+    "fields": {
+        "name": "Printer_kitchen2",
+        "api_key": "key4",
+        "check_type": "kitchen",
+        "point_id": 2
+    }
+}
+]

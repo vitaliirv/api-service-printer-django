@@ -1,0 +1,211 @@
+openapi: 3.14.0
+
+info:
+  title: Printer API
+  description: API for check printing service
+  version: v1.0.0
+
+servers:
+  - url: http://localhost:8000/
+    description: Devel
+
+tags:
+  - name: erp
+    description: API methods for ERP
+  - name: app
+    description: API methods for application
+
+paths:
+  /create_checks/:
+    post:
+      tags:
+        - erp
+
+      summary: Creating checks for an order
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+
+      responses:
+        '200':
+          description: Checks have been created successfully!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+              example:
+                ok: Checks have been created successfully!
+        '400':
+          description: |
+            One of the following errors occurred when creating checks:
+            1. Checks have already been created for this order
+            2. No printer is configured for this point
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /new_checks/:
+    get:
+      tags:
+        - app
+
+      summary: List of available checks for printing
+
+      parameters:
+        - $ref: '#/components/parameters/APIKey'
+
+      responses:
+        '200':
+          description: List of checks
+          content:
+            application/json:
+              schema:
+                properties:
+                  checks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Check'
+        '401':
+          description: No printer with this api_key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization error!
+
+  /check/:
+    get:
+      tags:
+        - app
+
+      summary: PDF-file check
+
+      parameters:
+        - $ref: '#/components/parameters/APIKey'
+        - name: check_id
+          in: query
+          required: true
+          description: ID check
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: PDF-file check
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: No printer with this api_key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Authorization error!
+        '400':
+          description: |
+            One of the following errors occurred while generating checks:
+            1. This check does not exist.
+            2. No PDF-file has been generated for this check
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  parameters:
+    APIKey:
+      name: api_key
+      in: query
+      required: true
+      description: API access key
+      schema:
+        type: string
+
+  schemas:
+    Order:
+      properties:
+        id:
+          type: integer
+          description: ID заказа
+        items:
+          type: array
+          description: Список позиций
+          items:
+            $ref: '#/components/schemas/Item'
+        price:
+          type: integer
+          description: Стоимость
+        address:
+          type: string
+          description: Адрес доставки
+        client:
+          type: object
+          description: Информация о клиенте
+          $ref: '#/components/schemas/Client'
+        point_id:
+          type: string
+          description: The point where the order is prepared
+      example:
+        id: 12345
+        price: 1200
+        items:
+          - name: Піца 4 сири
+            quantity: 1
+            unit_price: 300
+          - name: Піца мексиканська
+            quantity: 1
+            unit_price: 300
+          - name: Сет Роли Сімейний
+            quantity: 1
+            unit_price: 600
+        address: Рівне, Грушевського, 25/86
+        client:
+          name: Ошурко Степан
+          phone: 0975689856
+        point_id: 1
+
+    Item:
+      properties:
+        name:
+          type: string
+          description: Name
+        quantity:
+          type: integer
+          description: Quantity
+        unit_price:
+          type: integer
+          description: Unit price
+
+    Client:
+      properties:
+        name:
+          type: string
+          description: Client name
+        phone:
+          type: string
+          description: Phone number
+
+    Check:
+      properties:
+        id:
+          type: integer
+          description: ID чека
+
+    OkResponse:
+      properties:
+        ok:
+          type: string
+
+    ErrorResponse:
+      properties:
+        error:
+          type: string

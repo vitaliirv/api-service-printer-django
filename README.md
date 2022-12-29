@@ -2,7 +2,7 @@
 
 Problem. Let's imagine a chain of delivery restaurants "Pizza & Sushi", which has many points where orders are prepared for customers. Every customer wants to receive a receipt with their order containing detailed information about the order. The kitchen staff also want to receive a receipt, so that in the process of preparing and packing the order, they do not forget to put everything they need.
 
-This service solves this problem. It receives orders, generates receipts for cash register and kitchen printers.
+This service solves this problem. It receives information about the order, generates checks for the printers of the cash register and restaurant kitchen.
 
 ### Scheme of the service
 
@@ -33,21 +33,21 @@ This service solves this problem. It receives orders, generates receipts for cas
 python manage.py loaddata fixtures/model_Printer.json--app printing_checks.Printer
 ```
 
-| Field      | Type         | Value   | Description                     |
-|------------|--------------|---------|---------------------------------|
-| name       | CharField    |         | name of the printer             |
-| api_key    | CharField    |         | API access key                  |
-| check_type | CharField    | kitchen\|client | type of check printed by a printer |
-| point_id   | IntegerField |         | the point to which the printer is bound |
+| Field      | Type         | Value           | Description                             |
+|------------|--------------|-----------------|-----------------------------------------|
+| name       | CharField    |                 | name of the printer                     |
+| api_key    | CharField    |                 | API access key                          |
+| check_type | CharField    | kitchen\|client | type of check printed by a printer      |
+| point_id   | IntegerField |                 | the point to which the printer is bound |
 
 2. Check. The order information for each check is stored in JSON.
 
-| Поле       | Тип        | Значение               | Описание |
-|------------|------------| ---------------------- |---------|
-| printer_id | ForeignKey |                        | printer |
-| type       | CharField  | kitchen\| client  | check type                  |
-| order      | JSONField  |                        | order information |
-| status     | CharField  | new\|rendered\|printed | check status                  |
+| Поле       | Тип        | Значение               | Описание                         |
+|------------|------------| -----------------------|----------------------------------|
+| printer_id | ForeignKey |                        | printer                          |
+| type       | CharField  | kitchen\|client        | check type                       |
+| order      | JSONField  |                        | order information                |
+| status     | CharField  | new\|rendered\|printed | check status                     |
 | pdf_file   | FileField  |                        | a link to the generated PDF file |
 
 ### API

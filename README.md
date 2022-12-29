@@ -42,13 +42,13 @@ python manage.py loaddata fixtures/model_Printer.json--app printing_checks.Print
 
 2. Check. The order information for each check is stored in JSON.
 
-| Поле       | Тип        | Значение               | Описание                         |
-|------------|------------| -----------------------|----------------------------------|
-| printer_id | ForeignKey |                        | printer                          |
-| type       | CharField  | kitchen\|client        | check type                       |
-| order      | JSONField  |                        | order information                |
-| status     | CharField  | new\|rendered\|printed | check status                     |
-| pdf_file   | FileField  |                        | a link to the generated PDF file |
+| Field      | Type         | Value                  | Description                      |
+|------------|--------------| -----------------------|----------------------------------|
+| printer_id | ForeignKey   |                        | printer                          |
+| type       | CharField    | kitchen\|client        | check type                       |
+| order      | JSONField    |                        | order information                |
+| status     | CharField    | new\|rendered\|printed | check status                     |
+| pdf_file   | FileField    |                        | a link to the generated PDF file |
 
 ### API
 
